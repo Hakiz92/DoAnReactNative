@@ -21,7 +21,7 @@ export default function Feed() {
   
   const feedData = [
     {
-      id: 1,
+      id: '1',
       author: {
         name: "Jessica Gonzalez",
         avatar: "https://cdn.builder.io/api/v1/image/assets/TEMP/eae779a83a912d3dc2a8fa5cad88e261a5f0b794f9019ff77a7522d6670a6fa8?placeholderIfAbsent=true&apiKey=246443a9ddb849499eacf4ea5891bc1a",
@@ -41,7 +41,7 @@ export default function Feed() {
       }
     },
     {
-      id: 2,
+      id: '2',
       author: {
         name: "William King",
         avatar: "https://cdn.builder.io/api/v1/image/assets/TEMP/0574b89dc6208494c706ba55ac2274cda60b42b5f9b8f262fe592ce450ef463f?placeholderIfAbsent=true&apiKey=246443a9ddb849499eacf4ea5891bc1a",
