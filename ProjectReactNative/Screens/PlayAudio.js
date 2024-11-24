@@ -1,12 +1,14 @@
 import { useNavigation } from "@react-navigation/native";
 import * as React from "react";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { View, StyleSheet, Image, Text, TouchableOpacity, ImageBackground, ScrollView, Animated } from "react-native";
-
+import { Audio } from 'expo-av';
+import { Ionicons } from '@expo/vector-icons'; 
 function PlayAudio() {
     const navigation = useNavigation();
     const slideAnim = useRef(new Animated.Value(0)).current;
-
+    const [sound, setSound] = useState(null);
+    const [isPlaying, setIsPlaying] = useState(false);
   const songData = {
     title: "FLOWER",
     artist: "Jessica Gonzalez",
@@ -15,7 +17,38 @@ function PlayAudio() {
     likes: "12K",
     comments: "450"
   };
-
+  const playSound = async () => {
+    console.log("Playing sound:", isPlaying); // Kiểm tra trạng thái hiện tại
+    if (sound === null) {
+      const { sound: newSound } = await Audio.Sound.createAsync(
+        require('../assets/Play an Audio/flower.mp3'),
+        { shouldPlay: true }
+      );
+      setSound(newSound);
+      setIsPlaying(true);
+      console.log("Sound loaded and playing");
+    } else {
+      if (isPlaying) {
+        await sound.pauseAsync();
+        setIsPlaying(false);
+        console.log("Sound paused");
+      } else {
+        await sound.playAsync();
+        setIsPlaying(true);
+        console.log("Sound playing");
+      }
+    }
+  };
+  
+  
+  
+  useEffect(() => {
+    return sound
+      ? () => {
+          sound.unloadAsync();
+        }
+      : undefined;
+  }, [sound]);
   const handlePlayPress = () => {
     Animated.timing(slideAnim, {
       toValue: 1000,
@@ -26,7 +59,8 @@ function PlayAudio() {
     });
   };
   
-
+  
+  
   return (
    <ScrollView>
      <View style={styles.container} accessibilityRole="main">
@@ -38,16 +72,17 @@ function PlayAudio() {
         style={styles.backgroundImage}
       >
         <View style={styles.playerControls}>
-          <TouchableOpacity
-            accessible={true}
-            accessibilityLabel="Play music"
-            accessibilityRole="button"
-            accessibilityHint="Plays or pauses the current track"
-            style={styles.playButton}
-           
-          >
-            <Text style={styles.playText}>Play</Text>
-          </TouchableOpacity>
+        <TouchableOpacity
+   accessible={true}
+   accessibilityLabel="Play music"
+   accessibilityRole="button"
+   accessibilityHint="Plays or pauses the current track"
+   style={styles.playButton}
+   
+ >
+   <Text style={styles.playText}>{isPlaying ? 'Pause' : 'Play'}</Text>
+</TouchableOpacity>
+
           
           <TouchableOpacity
             accessible={true}
@@ -129,17 +164,18 @@ function PlayAudio() {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  accessible={true}
-                  accessibilityLabel="Play or pause"
-                  accessibilityRole="button"
-                >
-                  <Image
-                    resizeMode="contain"
-                   source={require("../assets/Play an Audio/Icon Button 3.png")}
-                    style={styles.mainPlayButton}
-                    accessible={false}
-                  />
-                </TouchableOpacity>
+                accessible={true}
+                accessibilityLabel="Play or pause"
+                accessibilityRole="button"
+                onPress={playSound}
+              >
+                <Image
+                  resizeMode="contain"
+                  source={require("../assets/Play an Audio/Icon Button 3.png")}
+                  style={styles.mainPlayButton}
+                  accessible={false}
+                />
+              </TouchableOpacity>
 
                 <TouchableOpacity
                   accessible={true}
